@@ -49,7 +49,19 @@ The development server proxies /api and /images requests to the backend at port 
 
 The sentiment response includes sentimentScore from Natural and a positive, neutral, or negative label. Both services expose /health.
 
-## CI
+## Hybrid cloud deployment
+
+The Express backend and MongoDB run in Kubernetes. Keep MongoDB on a private
+ClusterIP service and set MONGO_URL, MONGO_DB, and a private JWT_SECRET in the
+backend pod environment. The frontend is a separate static image for Code Engine.
+Build its image with the frontend directory as the Docker context:
+
+    docker build --build-arg REACT_APP_BACKEND_URL=https://your-public-backend-origin -t secondchancewebsite ./secondChance-frontend
+
+Use the real externally reachable backend origin without a trailing slash. This
+URL is public configuration, not a secret. Deploy the frontend image on port 9000.
+
+## CI checks
 
 GitHub Actions runs backend API checks, frontend production build, sentiment checks, and Docker builds on pushes and pull requests to main. The user-story issue bodies for the course lab are in docs/user-stories/; the repository issue template is in .github/ISSUE_TEMPLATE/user-story.md.
 
